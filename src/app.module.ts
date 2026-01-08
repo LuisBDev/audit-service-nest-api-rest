@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<string>('NODE_ENV') === 'development',
+        synchronize: false, // Siempre false dado que uso migrations
         logging: false,
         // Configuración optimizada para ~200 usuarios concurrentes
         connectTimeoutMS: 5000, // 5 segundos timeout de conexión

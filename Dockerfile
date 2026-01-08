@@ -23,11 +23,15 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Install all dependencies (needed for migrations)
+RUN npm ci
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
+
+# Copy source files and tsconfig (needed for migrations)
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
 # Expose the port
 EXPOSE 3000

@@ -2,6 +2,8 @@
 /dist
 /dist/*
 
+*.MD
+!README.md
 
 
 /node_modules
