@@ -3,15 +3,15 @@ import { IsString } from "class-validator";
 export class AuditUserDto {
 
     @IsString()
-    username: string;
+    readonly username: string;
 
     @IsString()
-    password: string;
+    readonly password: string;
 
     @IsString()
-    numeroDocumento: string;
+    readonly numeroDocumento: string;
 
     @IsString()
-    timestamp: string;
+    readonly timestamp: string;
 
 }

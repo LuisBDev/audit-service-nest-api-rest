@@ -1,10 +1,10 @@
 export class AuditUserResponseDto {
 
-    readonly id: string; //uuid
+    id: string; //uuid
 
-    readonly username: string;
-    readonly password: string;
-    readonly numeroDocumento: string;
-    readonly timestamp: string;
+    username: string;
+    password: string;
+    numeroDocumento: string;
+    timestamp: string;
 
 }

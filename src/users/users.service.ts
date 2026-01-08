@@ -1,26 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { AuditUserDto } from './dto/audit-user.dto';
-import { v4 as uuid } from 'uuid';
+import { AuditUserResponseDto } from './dto/audit-user-response.dto';
+import { UsersRepository } from './users.repository';
+import { UserMapper } from './mappers/user.mapper';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly userMapper: UserMapper,
+  ) { }
 
-
-  create(auditUserDto: AuditUserDto) {
-    return 'This action adds a new user';
+  async create(auditUserDto: AuditUserDto): Promise<AuditUserResponseDto> {
+    const user = await this.usersRepository.create(auditUserDto);
+    return this.userMapper.toAuditUserResponseDto(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<AuditUserResponseDto[]> {
+    const users = await this.usersRepository.findAll();
+    return this.userMapper.toAuditUserResponseDtoArray(users);
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<AuditUserResponseDto> {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return this.userMapper.toAuditUserResponseDto(user);
   }
 
-
-
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<void> {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    await this.usersRepository.delete(id);
   }
 }
