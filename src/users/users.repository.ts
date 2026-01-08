@@ -23,6 +23,7 @@ export class UsersRepository {
         return await this.repository
             .createQueryBuilder('user')
             .where('DATE(user.timestamp) = :date', { date })
+            .orderBy('user.timestamp', 'DESC')
             .getMany();
     }
 

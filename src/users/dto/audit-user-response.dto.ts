@@ -5,6 +5,6 @@ export class AuditUserResponseDto {
     username: string;
     password: string;
     numeroDocumento: string;
-    timestamp: string;
+    timestamp: Date;
 
 }

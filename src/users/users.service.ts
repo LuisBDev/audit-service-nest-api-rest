@@ -22,7 +22,7 @@ export class UsersService {
         username: auditUserDto.username,
         password: auditUserDto.password,
         numeroDocumento: auditUserDto.numeroDocumento,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
       } as any;
     }
   }

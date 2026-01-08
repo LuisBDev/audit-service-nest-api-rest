@@ -14,12 +14,12 @@ export class User {
     @Column()
     numeroDocumento: string;
 
-    @Column()
-    timestamp: string;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    timestamp: Date;
 
     @BeforeInsert()
     setTimestamp() {
-        this.timestamp = new Date().toISOString();
+        this.timestamp = new Date();
     }
 }
 
