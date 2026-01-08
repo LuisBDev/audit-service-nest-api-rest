@@ -11,7 +11,4 @@ export class AuditUserRequestDto {
     @IsString()
     readonly numeroDocumento: string;
 
-    @IsString()
-    readonly timestamp: string;
-
 }

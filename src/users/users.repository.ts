@@ -19,6 +19,13 @@ export class UsersRepository {
         return await this.repository.find();
     }
 
+    async findByDate(date: string): Promise<User[]> {
+        return await this.repository
+            .createQueryBuilder('user')
+            .where('DATE(user.timestamp) = :date', { date })
+            .getMany();
+    }
+
     async findOne(id: string): Promise<User | null> {
         return await this.repository.findOne({ where: { id } });
     }

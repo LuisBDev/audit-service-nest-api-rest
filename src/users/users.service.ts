@@ -22,13 +22,18 @@ export class UsersService {
         username: auditUserDto.username,
         password: auditUserDto.password,
         numeroDocumento: auditUserDto.numeroDocumento,
-        timestamp: auditUserDto.timestamp,
+        timestamp: new Date().toISOString(),
       } as any;
     }
   }
 
   async findAll(): Promise<AuditUserResponseDto[]> {
     const users = await this.usersRepository.findAll();
+    return this.userMapper.toAuditUserResponseDtoArray(users);
+  }
+
+  async findByDate(date: string): Promise<AuditUserResponseDto[]> {
+    const users = await this.usersRepository.findByDate(date);
     return this.userMapper.toAuditUserResponseDtoArray(users);
   }
 

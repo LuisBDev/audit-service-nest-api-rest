@@ -47,6 +47,19 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Get('date/:date')
+  @UseGuards(ApiKeyGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get users by date (format: YYYY-MM-DD)' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+  })
+  async findByDate(@Param('date') date: string): Promise<AuditUserResponseDto[]> {
+    return await this.usersService.findByDate(date);
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a user by ID' })
