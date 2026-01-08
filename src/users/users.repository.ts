@@ -15,8 +15,18 @@ export class UsersRepository {
         return await this.repository.save(user);
     }
 
-    async findAll(): Promise<User[]> {
-        return await this.repository.find();
+    async findAll(page: number, limit: number): Promise<{ users: User[]; total: number }> {
+        const skip = (page - 1) * limit;
+
+        const [users, total] = await this.repository.findAndCount({
+            skip,
+            take: limit,
+            order: {
+                timestamp: 'DESC',
+            },
+        });
+
+        return { users, total };
     }
 
     async findByDate(date: string): Promise<User[]> {

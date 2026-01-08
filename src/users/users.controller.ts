@@ -9,17 +9,21 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiHeader,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { AuditUserRequestDto } from './dto/audit-user-request.dto';
 import { AuditUserResponseDto } from './dto/audit-user-response.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { PaginatedResponseDto } from './dto/paginated-response.dto';
 import { ApiKeyGuard } from '../common/guards/api-key.guard';
-
+// TODO: Setear DB_HOST como postgres
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -37,14 +41,16 @@ export class UsersController {
   @Get()
   @UseGuards(ApiKeyGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get all users with pagination' })
   @ApiHeader({
     name: 'x-api-key',
     description: 'API Key for authentication',
     required: true,
   })
-  async findAll(): Promise<AuditUserResponseDto[]> {
-    return await this.usersService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page (default: 10, max: 100)' })
+  async findAll(@Query() paginationQuery: PaginationQueryDto): Promise<PaginatedResponseDto> {
+    return await this.usersService.findAll(paginationQuery);
   }
 
   @Get('date/:date')

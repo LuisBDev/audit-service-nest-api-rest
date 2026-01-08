@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { AuditUserRequestDto } from './dto/audit-user-request.dto';
 import { AuditUserResponseDto } from './dto/audit-user-response.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { PaginatedResponseDto } from './dto/paginated-response.dto';
 import { UsersRepository } from './users.repository';
 import { UserMapper } from './mappers/user.mapper';
 
@@ -27,9 +29,17 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<AuditUserResponseDto[]> {
-    const users = await this.usersRepository.findAll();
-    return this.userMapper.toAuditUserResponseDtoArray(users);
+  async findAll(paginationQuery: PaginationQueryDto): Promise<PaginatedResponseDto> {
+    const { page = 1, limit = 10 } = paginationQuery;
+    const { users, total } = await this.usersRepository.findAll(page, limit);
+
+    return {
+      data: this.userMapper.toAuditUserResponseDtoArray(users),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findByDate(date: string): Promise<AuditUserResponseDto[]> {
