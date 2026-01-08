@@ -1,6 +1,6 @@
 import { IsString } from "class-validator";
 
-export class AuditUserDto {
+export class AuditUserRequestDto {
 
     @IsString()
     readonly username: string;

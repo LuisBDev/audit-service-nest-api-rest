@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nest-postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nest-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-app
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      API_KEY: ${API_KEY}
+    networks:
+      - nest-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  nest-network:
+    driver: bridge

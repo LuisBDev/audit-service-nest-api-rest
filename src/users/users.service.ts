@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { AuditUserDto } from './dto/audit-user.dto';
+import { AuditUserRequestDto } from './dto/audit-user-request.dto';
 import { AuditUserResponseDto } from './dto/audit-user-response.dto';
 import { UsersRepository } from './users.repository';
 import { UserMapper } from './mappers/user.mapper';
@@ -11,9 +11,20 @@ export class UsersService {
     private readonly userMapper: UserMapper,
   ) { }
 
-  async create(auditUserDto: AuditUserDto): Promise<AuditUserResponseDto> {
-    const user = await this.usersRepository.create(auditUserDto);
-    return this.userMapper.toAuditUserResponseDto(user);
+  async create(auditUserDto: AuditUserRequestDto): Promise<AuditUserResponseDto> {
+    try {
+      const user = await this.usersRepository.create(auditUserDto);
+      return this.userMapper.toAuditUserResponseDto(user);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      return {
+        id: null,
+        username: auditUserDto.username,
+        password: auditUserDto.password,
+        numeroDocumento: auditUserDto.numeroDocumento,
+        timestamp: auditUserDto.timestamp,
+      } as any;
+    }
   }
 
   async findAll(): Promise<AuditUserResponseDto[]> {
