@@ -66,13 +66,13 @@ jobs:
             echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
 
             # Desplegar
-            docker compose down --remove-orphans
-            docker compose pull app
-            docker compose up -d
+            docker-compose down --remove-orphans
+            docker-compose pull app
+            docker-compose up -d
 
             # Esperar y ejecutar migrations
             sleep 10
-            docker compose exec -T app npm run migration:run || true
+            docker-compose exec -T app npm run migration:run || true
 
             # Limpiar imágenes antiguas
             docker image prune -f
